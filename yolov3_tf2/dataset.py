@@ -69,7 +69,8 @@ def transform_targets(y_train, anchors, anchor_masks, size):
 
     return tuple(y_outs)
 
-
+# This function takes care of resizing and scaling, so if you just want to let your
+# stuff run through this, make sure to multiply your scaled depth by 255
 def transform_images(x_train, size):
     x_train = tf.image.resize(x_train, (size, size))
     x_train = x_train / 255
@@ -132,7 +133,13 @@ def load_fake_dataset():
     x_train = tf.image.decode_jpeg(
         open('./data/girl.png', 'rb').read(), channels=3)
     x_train = tf.expand_dims(x_train, axis=0)
-
+    shape = x_train.shape
+    # how I created the fake depths
+    fake_depths = tf.random.uniform((shape[0],shape[1],shape[2],1),maxval=5,dtype=tf.dtypes.int32)
+    x_train = tf.cast(
+        x_train,tf.dtypes.int32, name=None
+    )
+    x_train = tf.concat((x_train,fake_depths),axis=3)
     labels = [
         [0.18494931, 0.03049111, 0.9435849,  0.96302897, 0],
         [0.01586703, 0.35938117, 0.17582396, 0.6069674, 56],

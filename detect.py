@@ -51,6 +51,8 @@ def main(_argv):
 
     t1 = time.time()
     boxes, scores, classes, nums = yolo(img)
+
+
     t2 = time.time()
     logging.info('time: {}'.format(t2 - t1))
 
